@@ -10,12 +10,17 @@ size_multiplier = 2048
 
 class TestModel1(models.Model):
     ifield1 = models.IntegerField(_('Integer field 1'))
-    ifield2 = models.IntegerField(_('Integer field 2'), db_index=True)
+    ifield2 = models.IntegerField(_('Integer field 2'))
     ifield3 = models.IntegerField(_('Integer field 3'), blank = True, null = True)
     bfield4 = models.BooleanField(_('Boolean field 4'))
     bfield5 = models.BooleanField(_('Boolean field 5'), blank = True, null = True)
     tfield6 = models.TextField(_('Text field 6'))
     tfield7 = models.TextField(_('Text field 7'), blank = True, null = True)
+    index_field = models.IntegerField(_("Index Field"), default = 0)
+
+class Queue(models.Model):
+    external_key = models.IntegerField(_('PK From Other Model'))
+    ifield2 = models.IntegerField(_("Integer field 2 clone"))
     index_field = models.IntegerField(_("Index Field"), default = 0)
 
 def create_random_testmodels(amount=10):
@@ -31,3 +36,5 @@ def create_random_testmodels(amount=10):
             index_field = random.randint(0,4)
         )
         test_model.save()
+        if bool(random.getrandbits(1)) and bool(random.getrandbits(1)):
+            Queue(external_key=test_model.id, ifield2=test_model.ifield2, index_field=test_model.index_field).save()
